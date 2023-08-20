@@ -1,0 +1,51 @@
+#include<iostream>
+using namespace std;
+class binarysearch{
+	int size;
+	int *arr;
+	public:	
+        binarysearch(int n){
+        	size=n;
+            arr = new int [n];
+	   }
+};
+int binarysearch(int arr[],int key,int low,int hight)
+{
+    
+	int counter =0;
+    while(low<=hight){
+	
+    	int mid=(low+hight)/2;
+        if(arr[mid]==key)
+    	{counter=1;
+		cout<< "searched element is present at index="<<" "<<mid+1<<endl;
+        break;
+       }
+   else if(key>arr[mid])
+    return binarysearch(arr,key,mid+1,hight);
+   else
+	return	binarysearch(arr,key,low,mid-1);
+    }
+   if(counter=0)
+   cout<<"Element is not present\n";
+   return 0;
+}
+
+int main()
+{ 
+  int low,end,i,size,key;
+  cout<<"enter the size of arry\n";
+  cin>>size;
+  int arr[size]; 
+  cout<<"enter the elements for array in ascending order\n"; 
+  for(i=0;i<size;i++)
+	{
+	cin>>arr[i];
+	}
+	low=0;
+	end=size-1;
+	cout<<"enter the value to search\n";
+	cin>>key;
+	binarysearch(arr, key,low, end);
+   return 0;
+}
