@@ -1,0 +1,104 @@
+#include<iostream>
+using namespace std;
+class stack
+{
+	public:
+	int size;
+    int *a;
+    int top;
+    stack(int s)
+    {
+        size=s;
+        a=new int [size];
+        top=-1;
+		
+    }
+void push(int value)
+{
+    if(top==size-1)
+    {
+        cout<<"stack is overflow\n";
+        return ;
+    }
+    else{
+        top=top+1;
+        a[top]=value;
+    }
+}
+int pop()
+{
+    if(top==-1)
+    {
+        cout<<"stack is overflow\n";
+        return 0;
+    }
+    else
+    {
+        int x=a[top];
+        top=top-1;
+        return x;
+    }
+}
+bool isempty()
+	{
+		if(top==-1)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+void adding_two_large_integers(stack stl1,stack stl2)
+	{
+		
+		int carry=0;
+		int sum=0;
+		while(!stl1.isempty() && !stl2.isempty())
+		{
+			sum=(carry+stl1.pop()+stl2.pop());
+			push(sum%10);
+			carry=sum/10;
+		}
+		while(!stl1.isempty())
+		{
+			sum=carry+stl1.pop();
+			push(sum%10);
+			carry=sum/10;
+		}
+		while(!stl2.isempty())
+		{
+			sum=carry+stl2.pop();
+			push(sum%10);
+			carry=sum/10;
+		}
+		while(carry>0)
+		{
+			push(carry);
+			carry=carry/10;
+		}
+		while(!isempty())
+		{
+			cout<<pop()<<" ";
+		}
+      }
+};
+int main()
+{   
+    stack stl1(10);
+    stack stl2(10);
+    stack res(10);
+   
+    int value;
+    cout<<"Enter the number 1\n";
+	cin>>value;
+	stl1.push(value);
+	cout<<"Enter the 2nd number\n";
+	cin>>value;
+	stl2.push(value);
+    res.adding_two_large_integers(stl1,stl2);
+    
+	
+    return 0;
+}
