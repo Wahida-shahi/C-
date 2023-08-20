@@ -1,0 +1,460 @@
+#include<iostream>
+using namespace std;
+int height = 0;
+class node{
+    public:
+    int data;
+    node*left;
+    node*right;
+};
+class Queue
+{
+	private:
+		node *front;
+		node *rear;
+	public:
+		Queue()
+		{
+			front=NULL;
+			rear=NULL;
+		}
+		void enqueue(int item)
+		{
+			if(front==NULL)
+			{
+				front=new node;
+				front->data=item;
+				front->right= NULL;
+				front->left=NULL;
+				rear=front;
+			}
+			else{
+				node *q = new node;
+				q->data=item;
+				q->left=rear;
+				rear->right=q;
+				q->right=NULL;
+				rear=q;
+			}
+		}
+		node* first(){
+			return front;
+		}
+		bool isEmpty()
+		{
+			if(front==NULL && rear==NULL)
+			{
+				return 1;
+			}
+			else{
+				return 0;
+			}
+		}
+		void dequeue()
+		{
+			if(isEmpty()){
+				cout<<"empty"<<endl;
+			}
+			else{
+				if(front==rear)
+				{
+					node *q=front;
+					front=NULL;
+					rear=NULL;
+					delete q;
+				}
+				else{
+					node *q=front;
+					node *r;
+					r=q->right;
+					delete q;
+					front=r;
+				}
+			}
+		}	
+};
+class BST{
+    public:
+    node*root;
+    BST()
+    {
+        root=NULL;
+    }
+
+void insertion(int ele)
+    {
+    	node*temp=new node;
+        temp->data=ele;
+       	temp->left=temp->right=NULL;
+        if(root==NULL)// tree is empty.
+            {
+            	root=temp;
+             }
+        else{
+        	node* p=root;
+            node*prev=p;
+        while(p!=NULL)
+        {
+        if(p->data>ele)
+        {	prev=p;
+        	p=p->left;
+        }
+        else{
+        	prev=p;
+        	p=p->right;
+		}
+		}
+		if(prev->data<ele)
+        	prev->right=temp;
+		else
+        	prev->left=temp;
+    }
+    }
+node *predecessor(node *n)
+		{
+			n = n->left;
+			while(n->right!=NULL)
+			{
+				n=n->right;
+			}
+			return n;
+		}
+node *successor(node *n)
+		{
+			n=n->right;
+			while(n->left!=NULL)
+			{
+				n = n->left;
+			}
+			return n;
+		}
+        
+void delete_merging(node* root ,node* prev=NULL)
+		{
+			node* a= root;
+			node* p =root;
+			node* q;
+			if(root!=NULL)
+			{
+				if(root->left==NULL && root->right==NULL)
+				{
+					if(prev->left==root){
+						prev->left=NULL;
+					}
+					else{
+						prev->right=NULL;
+					}
+					delete p;
+				}
+				else if(root==root)
+				{
+					q=predecessor(p);
+					q->right=root->right;
+					root= root->left;
+					delete root;
+				}
+				else if(root->right==NULL)
+				{
+					if(root==prev->left){
+						root=root->left;
+						prev->left=root;
+					}
+					else{
+						root=root->left;
+						prev->right=root;
+					}
+					delete p;
+				}
+				else if(root->left==NULL){
+					if(root==prev->left){
+						root=root->right;
+						prev->left=root;
+					}
+					else{
+						root=root->right;
+						prev->right=root;
+					}
+					delete p;
+				}
+				else{
+					q=predecessor(p);
+					p=p->left;
+					
+					q->right=root->right;
+					q=root;
+					root=root->left;
+					if(prev->data<p->data){
+						prev->right=p;
+					}
+					else{
+						prev->left=p;
+					}
+					delete q;
+				}
+			
+			}
+			
+		}
+void deletion(int ele)
+		{
+			node *p = root;
+			node *q = NULL;
+			while(p!=NULL)
+			{
+				if(p->data==ele)
+				{
+					break;
+				}
+				q=p;
+				if(ele<p->data){
+					p=p->left;
+				}
+				else
+				{
+					p=p->right;
+				}
+			}
+			if(p!=NULL && p->data==ele)
+			{
+				int choose;
+				cout<<"choose:\n1)Delete by Merging\n";
+				cin>>choose;
+				if(choose==1)
+				{
+					if(p==root)
+					{       
+						delete_merging(root);
+					}
+					else if(q->left==p)
+					{
+						delete_merging(q->left,q);
+					}
+					else{
+						delete_merging(q->right,q);
+					}
+				}		
+			}
+			else if(root!=NULL)
+			{
+				cout<<"Element not found"<<endl;
+			}
+			else{
+				
+				cout<<"Emplty BST"<<endl;
+			}
+			
+			
+		}
+int search(node*p,int ele)
+{  
+            
+            while(p!=NULL)
+            {
+                if(p->data==ele)
+                {
+                    return (p->data);
+                }
+                else if(p->data<ele)
+                {
+                    p = p->left;
+                }
+                else {
+                    p=p->right;
+                }
+            }
+        return  0;
+}
+void see(int ele,int y)
+		{
+			int found;
+			found=search(root,ele);
+			deletion(found);
+			insertion(y);
+			return;
+		}
+void in_order(node*root)//VLR{VIST,LEFT,RIGHT}
+	  {
+		node *p=root;
+	 	 if(p!=NULL)
+		 {
+		 	in_order (p->left);
+            cout<<p->data;
+            in_order (p->right);
+         }
+	 }
+void pre_order(node*root)//VLR{VIST,LEFT,RIGHT}
+	  {
+	    node *p=root;
+	 	 if(p!=NULL)
+		 {
+            cout<<p->data;
+            pre_order (p->left);
+            pre_order (p->right);
+         }
+	 }
+      void post_order(node*root)//LRV{LEFT,RIGHT,VIST}
+	 {
+	 	node *p=root;
+	 	if(p!=NULL)
+		 {
+            post_order (p->left);
+            post_order (p->right);
+            cout<<p->data; 
+         }
+	 }
+void breath_first()
+		{
+			Queue q;
+			q.enqueue(root->data);
+			while(!q.isEmpty()){
+				node *f = q.first();
+				node *p = root;
+				while(p->data!=f->data)
+				{
+					if(f->data==p->data)
+					{
+						p=p;
+					}
+					else if(f->data<p->data){
+						p=p->left;
+					}
+					else{
+						p=p->right;
+					}
+				
+				}
+				cout<<f;
+				q.dequeue();
+				if(p->left!=NULL || p->right!=NULL)
+				{
+					height=height+1;
+				}
+				if(p->left!=NULL){
+					q.enqueue(p->left->data); 
+				} 
+				if(p->right!=NULL){
+					q.enqueue(p->right->data); 
+				}
+			} 
+		}
+/*int height(node* root) {
+        // Get the height of the tree
+        if (root==NULL)
+        return 0;
+        else {
+        // Find the height of both subtrees
+        // and use the larger one
+        int left_height = height(root->left);
+        int right_height = height(root->right);
+        if (left_height >right_height)
+            {
+                return (left_height + 1);
+            }
+        else
+            {
+                return (right_height + 1);
+            }
+       }
+      } 
+      int h()
+      {
+        int count=height(root);
+        cout<<"hieght is="<<count<<endl;
+      }*/
+};
+int main()
+{
+	BST B;
+	int ch,c;
+	cout<<"Menu\n";
+	do{
+		cout<<"1)insertion\n2)deletion\n";
+        cout<<"3)Search element x in the BST and change its value to y and then place the node with value y at";
+		cout<<"its appropriate position in the BST\n";
+        cout<<"4)Display the elements of the BST in1)in-order2)post-order3)per-order traversal\n";
+        cout<<"5)Display the elements of the BST in level-by-level traversal{Breath first}\n6)Display the height of the BST \n";
+		int c;
+		cout<<"\nEnter your choice\n";
+		cin>>c;
+		if(c==1)
+        {
+        int ele;
+		cout<<"Enter the element\n";
+		cin>>ele;
+		B.insertion(ele);
+		}
+		else if(c==2)
+		{
+			int x;
+			cout<<"deletion at BST\n";
+			cin>>x;
+			cout<<"deletion BST\n";
+            B.deletion(x);
+		}
+		else if (c==3)
+		{
+            int z;
+		    cout<<"Enter  element in the BST to search \n"; 
+            cin>>z;
+            cout<<"Enter the element in BST to insert\n";
+            int y;
+            cin>>y;
+            B.see(z , y);
+        }
+		else if (c==4)
+		{
+			int choice,cho;
+			{
+			cout<<"Enter your choice for traversal\n1)in-order\n2)post-order\n3)per-order\n4)level-by-level\n";
+			do{
+				cin>>cho;
+			if(cho==1)
+            {
+            cout<<"1)in-order at BST is=\n";
+            B.in_order(B.root);
+            
+	     	}
+		    else if(cho==2)
+		    {
+			cout<<"2)post-order  at BST is=\n";
+            B.post_order(B.root);
+	     	}
+	     	else if(cho==3)
+		    {
+			cout<<"3)pre-order at BST is=\n";
+            B.pre_order(B.root);
+	     	}
+			else if(cho==4)
+			{
+               cout<<"elements of the BST in level-by-level traversal=\n";
+                B.breath_first();
+			}
+			else 
+			{
+			cout<<"Invalied choicec\n";
+		    }
+		     cout<<"\nDO YOU WANT MORE PRINT [1||0]\n";
+		     cin>>cho;		
+			}while(cho==1);	
+			}
+        }  
+        // else if(c==5)
+        // {
+        //  cout<<"elements of the BST in level-by-level traversal=\n";
+        //   B.breath_first();
+	    // }
+        else if(c==6)
+        {
+            cout<<"Display the height of the BST \n";
+            int height;
+            //B.h();
+        }
+		else{
+			cout<<"Invalied choicec\n";
+		}
+		cout<<"\nDO YOU WANT MORE CHOICE [1||0]\n";
+		cin>>ch;
+		}
+		while(ch==1);
+	return 0;
+}
